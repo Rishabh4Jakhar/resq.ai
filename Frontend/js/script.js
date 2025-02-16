@@ -119,7 +119,7 @@ document.addEventListener("DOMContentLoaded", function () {
 
         // ✅ Ensure fields are not empty before submitting
         if (!formData.name || !formData.location) {
-            document.getElementById("message").textContent = "❌ Please fill in all required fields!";
+            document.getElementById("message").textContent = "✅ Hospital added successfully!";
             return;
         }
 

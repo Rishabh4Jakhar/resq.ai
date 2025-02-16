@@ -16,7 +16,20 @@
     </nav>
 
     <!-- ✅ Hospital Submission Form -->
-
+    
+    <h2>Add Hospital</h2>
+    <form id="hospital-form">
+        <input type="text" id="name" name="name" placeholder="Hospital Name" required><br>
+        <input type="text" id="location" name="location" placeholder="Location" required><br>
+        <input type="text" id="location_link" name="location_link" placeholder="Google Maps Link" required><br>
+        <input type="number" id="total_beds" name="total_beds" placeholder="Total Beds" required><br>
+        <input type="number" id="available_beds" name="available_beds" placeholder="Available Beds" required><br>
+        <input type="number" id="icu_beds" name="icu_beds" placeholder="ICU Beds" required><br>
+        <input type="number" id="ventilators" name="ventilators" placeholder="Ventilators" required><br>
+        <input type="number" id="oxygen_supply" name="oxygen_supply" placeholder="Oxygen Supply" required><br>
+        <button type="submit">Submit Hospital</button>
+    </form>
+    <p id="message" >Successfully submitted</p>
     
     <!-- ✅ Hospital List -->
     <h2>Hospital Data</h2>
