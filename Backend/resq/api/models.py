@@ -1,4 +1,5 @@
 from django.db import models
+from django.contrib.auth.models import User 
 
 # Create your models here.
 class Hospital(models.Model):
@@ -14,7 +15,25 @@ class Hospital(models.Model):
 
     def __str__(self):
         return self.name
-    
+
+class MedicineStock(models.Model):
+    hospital = models.ForeignKey(Hospital, on_delete=models.CASCADE)
+    medicine_name = models.CharField(max_length=255)
+    quantity = models.IntegerField()
+    last_updated = models.DateTimeField(auto_now=True)
+
+    def __str__(self):
+        return f"{self.medicine_name}: {self.quantity} at {self.hospital.name}"
+
+class FoodResource(models.Model):
+    relief_center = models.CharField(max_length=255)
+    food_type = models.CharField(max_length=255)
+    quantity = models.IntegerField()
+    last_updated = models.DateTimeField(auto_now=True)
+
+    def __str__(self):
+        return f"{self.food_type}: {self.quantity} at {self.relief_center}"
+
 class ReliefCenter(models.Model):
     name = models.CharField(max_length=255)
     location = models.CharField(max_length=255)
@@ -28,6 +47,20 @@ class ReliefCenter(models.Model):
 
     def __str__(self):
         return self.name
+    
+class ReliefTeam(models.Model):
+    name = models.CharField(max_length=255)
+    organization = models.CharField(max_length=255)
+    availability_status = models.CharField(max_length=50, choices=[("Available", "Available"), ("Busy", "Busy")])
+    last_updated = models.DateTimeField(auto_now=True)
+
+class Volunteer(models.Model):
+    user = models.ForeignKey(User, on_delete=models.CASCADE)  # Verified personnel
+    full_name = models.CharField(max_length=255)
+    contact_info = models.CharField(max_length=255)
+    skills = models.CharField(max_length=255)
+    availability_status = models.CharField(max_length=50, choices=[("Available", "Available"), ("Busy", "Busy")])
+    last_updated = models.DateTimeField(auto_now=True)
     
 class Shelter(models.Model):
     name = models.CharField(max_length=255)
