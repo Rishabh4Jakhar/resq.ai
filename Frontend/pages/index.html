@@ -10,18 +10,54 @@
     <script defer src="{% static 'script.js' %}"></script> <!-- Correct JS Path -->
 </head>
 <body>
-    <header>
+<!-- ✅ Navbar -->
+<nav class="navbar">
+    <div class="nav-title">
         <h1>Emergency Help System</h1>
-        <h1>Welcome to RESQ.AI</h1>
-        <div id="alert-container"></div> <!-- Alerts will appear here -->        
-    </header>
+        <h3>Resq.ai</h3>
+    </div>
+    <div class="dropdown">
+        <button class="dropbtn">Login/Register</button>
+        <div class="dropdown-content">
+            <a href="#" onclick="openAuthModal(false)">Login</a>
+            <a href="#" onclick="openAuthModal(true)">Register</a>
+        </div>
+    </div>
+</nav>
 
-    <main>
-        <button onclick="navigateTo('locator')">Find Emergency Help</button>
-        <button onclick="navigateTo('crisis-map')">Track Crisis Live</button>
-        <button onclick="navigateTo('dashboard')">View Dashboard</button>
-        <button onclick="navigateTo('alerts')">Alerts & Updates</button>
-    </main>
+<!-- ✅ Main Buttons for Navigation -->
+<div class="main-container">
+    <button onclick="window.location.href='locator.html'">Find Emergency Help</button>
+    <button onclick="window.location.href='crisis_map.html'">Track Crisis Live</button>
+    <button onclick="window.location.href='dashboard.html'">View Dashboard</button>
+    <button onclick="window.location.href='alerts.html'">Alerts & Updates</button>
+</div>
+
+<!-- ✅ Login/Register Modal -->
+<div id="authModal" class="modal">
+    <div class="modal-content">
+        <span class="close" onclick="closeAuthModal()">&times;</span>
+        <h2 id="authTitle">Login</h2>
+        <form id="authForm">
+            <input type="text" name="name" placeholder="Name" required><br>
+            <input type="password" name="password" placeholder="Password" required><br>
+            <input type="number" name="age" placeholder="Age" required><br>
+            <select name="gender" required>
+                <option value="" disabled selected>Select Gender</option>
+                <option value="Male">Male</option>
+                <option value="Female">Female</option>
+                <option value="Other">Other</option>
+            </select><br>
+            <input type="text" name="location" placeholder="Location" required><br>
+            <input type="text" name="mobile_no" placeholder="Mobile No." required><br>
+            <div id="vendorFields" style="display: none;">
+                <input type="text" name="organization" placeholder="Organization"><br>
+            </div>
+            <label><input type="checkbox" id="is_vendor" onchange="toggleVendor()"> Register as Vendor</label><br>
+            <button type="submit">Submit</button>
+        </form>
+    </div>
+</div>
 
     <!-- <script src="script.js"></script> -->
 </body>

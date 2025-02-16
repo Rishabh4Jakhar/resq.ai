@@ -127,7 +127,31 @@ def login_user(request):
         })
     return Response({"error": "Invalid credentials"}, status=status.HTTP_401_UNAUTHORIZED)
 
-  
+class AuthViewSet(viewsets.ViewSet):
+
+    # ✅ Register a new user
+    def create(self, request):  
+        serializer = RegisterSerializer(data=request.data)
+        if serializer.is_valid():
+            serializer.save()
+            return Response({"message": "User registered successfully!"}, status=status.HTTP_201_CREATED)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+    # ✅ Login user (generate JWT token)
+    def login(self, request):
+        name = request.data.get("name")
+        password = request.data.get("password")
+
+        user = authenticate(username=name, password=password)
+        if user:
+            refresh = RefreshToken.for_user(user)
+            return Response({
+                "message": "Login successful!",
+                "access_token": str(refresh.access_token),
+                "user": UserSerializer(user).data
+            })
+        return Response({"error": "Invalid credentials"}, status=status.HTTP_401_UNAUTHORIZED)
+
 class ActiveAlertsViewSet(viewsets.ViewSet):
     def retrieve(self, request):
         alerts = list(Alert.objects.filter(is_active=True).values('crisis_event__crisis_type', 'message', 'crisis_event__location'))

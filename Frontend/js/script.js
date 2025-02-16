@@ -134,3 +134,55 @@ document.addEventListener("DOMContentLoaded", function () {
         });
     });
 });
+
+// ✅ Show login/register modal
+function openAuthModal(isRegister) {
+    document.getElementById("authModal").style.display = "block";
+    document.getElementById("authTitle").textContent = isRegister ? "Register" : "Login";
+    document.getElementById("is_vendor").checked = false;
+    document.getElementById("vendorFields").style.display = "none";
+}
+
+// ✅ Close modal
+function closeAuthModal() {
+    document.getElementById("authModal").style.display = "none";
+}
+
+// ✅ Show vendor fields if "Register as Vendor" is checked
+function toggleVendor() {
+    document.getElementById("vendorFields").style.display = document.getElementById("is_vendor").checked ? "block" : "none";
+}
+
+// ✅ Submit login/register form
+document.addEventListener("DOMContentLoaded", function () {
+    const authForm = document.getElementById("authForm");
+
+    authForm.addEventListener("submit", function (event) {
+        event.preventDefault();  // Prevent default form submission
+
+        let formData = {
+            name: authForm.name.value,
+            password: authForm.password.value,
+            age: parseInt(authForm.age.value),
+            gender: authForm.gender.value,
+            location: authForm.location.value,
+            mobile_no: authForm.mobile_no.value,
+            is_vendor: document.getElementById("is_vendor").checked,
+            organization: document.getElementById("is_vendor").checked ? authForm.organization.value : null
+        };
+
+        let url = formData.is_vendor ? "/api/auth/register/" : "/api/auth/login/";
+
+        fetch(url, {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify(formData)
+        })
+        .then(response => response.json())
+        .then(data => {
+            alert(data.message);
+            closeAuthModal();
+        })
+        .catch(error => console.error("Error:", error));
+    });
+});
