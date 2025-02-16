@@ -46,7 +46,6 @@ body {
 .nav-title h1 {
     font-size: 1.8rem;
     background: var(--accent-gradient);
-    -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
     margin: 0;
     letter-spacing: -0.5px;
@@ -265,7 +264,6 @@ input[type="checkbox"] {
     font-size: 1.8rem;
     font-weight: 600;
     background: var(--accent-gradient);
-    -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
 }
 
