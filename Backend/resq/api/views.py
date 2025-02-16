@@ -1,10 +1,11 @@
 from django.shortcuts import render
+from django.http import JsonResponse
 from rest_framework import viewsets, permissions, status
 from .models import Hospital, ReliefCenter, Shelter, Alert, MedicineStock, FoodResource, ReliefTeam, Volunteer
 from .serializers import HospitalSerializer, ReliefCenterSerializer, ShelterSerializer, AlertSerializer, MedicineStockSerializer, FoodResourceSerializer, ReliefTeamSerializer, VolunteerSerializer
 from rest_framework.response import Response
 from rest_framework.decorators import api_view
-from .utils import predict_bed_shortage
+from .utils import predict_bed_shortage, predict_shortages
 
 class HospitalViewSet(viewsets.ModelViewSet):
     queryset = Hospital.objects.all()
@@ -76,6 +77,16 @@ def medicine_stock_list(request):
             serializer.save()
             return Response(serializer.data, status=status.HTTP_201_CREATED)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+    
+@api_view(['GET'])
+def ai_shortage_predictions(request):
+    predictions = predict_shortages()
+    return JsonResponse(predictions)
+
+class ShortagePredictionViewSet(viewsets.ViewSet):
+    def list(self, request):
+        predictions = predict_shortages()
+        return Response(predictions)
 
 def home(request):
     return render(request, 'index.html')

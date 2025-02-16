@@ -95,3 +95,22 @@ class Alert(models.Model):
 
     def __str__(self):
         return f"{self.alert_type} at {self.location}"
+
+class Resource(models.Model):
+    name = models.CharField(max_length=255)  # e.g., Oxygen, Medicine, Food
+    quantity = models.IntegerField()  # Current stock level
+    location = models.CharField(max_length=255)  # Warehouse/Hospital location
+    last_updated = models.DateTimeField(auto_now=True)
+
+class Supplier(models.Model):
+    name = models.CharField(max_length=255)
+    resource_type = models.CharField(max_length=255)  # e.g., Oxygen, Medicine
+    reliability_score = models.FloatField()  # AI-generated rating
+    response_time = models.FloatField()  # Avg delivery time in hours
+    cost_efficiency = models.FloatField()  # AI-predicted cost efficiency
+
+class SupplyChainLog(models.Model):
+    resource = models.ForeignKey(Resource, on_delete=models.CASCADE)
+    supplier = models.ForeignKey(Supplier, on_delete=models.CASCADE, null=True, blank=True)
+    action = models.CharField(max_length=255)  # e.g., "Reallocated", "Shortage Detected"
+    timestamp = models.DateTimeField(auto_now_add=True)
