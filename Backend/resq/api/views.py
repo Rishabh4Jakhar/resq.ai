@@ -1,5 +1,5 @@
 from django.shortcuts import render
-from rest_framework import viewsets, permissions
+from rest_framework import viewsets, permissions, status
 from .models import Hospital, ReliefCenter, Shelter, Alert, MedicineStock, FoodResource, ReliefTeam, Volunteer
 from .serializers import HospitalSerializer, ReliefCenterSerializer, ShelterSerializer, AlertSerializer, MedicineStockSerializer, FoodResourceSerializer, ReliefTeamSerializer, VolunteerSerializer
 from rest_framework.response import Response
@@ -48,3 +48,34 @@ class VolunteerViewSet(viewsets.ModelViewSet):
 def predict_bed_shortage_view(request):
     bed_shortage = predict_bed_shortage()
     return Response({'bed_shortage': bed_shortage})
+
+@api_view(['GET', 'POST'])
+def hospital_list(request):
+    if request.method == 'GET':  # Fetch all hospitals
+        hospitals = Hospital.objects.all()
+        serializer = HospitalSerializer(hospitals, many=True)
+        return Response(serializer.data)
+
+    elif request.method == 'POST':  # Save new hospital data
+        serializer = HospitalSerializer(data=request.data)
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data, status=status.HTTP_201_CREATED)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+@api_view(['GET', 'POST'])
+def medicine_stock_list(request):
+    if request.method == 'GET':  # Fetch medicine stock data
+        medicines = MedicineStock.objects.all()
+        serializer = MedicineStockSerializer(medicines, many=True)
+        return Response(serializer.data)
+
+    elif request.method == 'POST':  # Save new medicine stock data
+        serializer = MedicineStockSerializer(data=request.data)
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data, status=status.HTTP_201_CREATED)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+#def home(request):
+#    return render(request, 'api/home.html')
