@@ -30,6 +30,12 @@ ALLOWED_HOSTS = []
 
 # Application definition
 
+CHANNEL_LAYERS = {
+    "default": {
+        "BACKEND": "channels.layers.InMemoryChannelLayer",
+    },
+}
+
 INSTALLED_APPS = [
     'django.contrib.admin',
     'django.contrib.auth',
@@ -39,6 +45,7 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'rest_framework',
     'api.apps.ApiConfig',
+    'channels',
 ]
 
 MIDDLEWARE = [
@@ -70,7 +77,7 @@ TEMPLATES = [
 ]
 
 WSGI_APPLICATION = 'resq.wsgi.application'
-
+ASGI_APPLICATION = "resqai_backend.asgi.application"
 
 # Database
 # https://docs.djangoproject.com/en/5.1/ref/settings/#databases
