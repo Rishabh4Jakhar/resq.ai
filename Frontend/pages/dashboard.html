@@ -16,24 +16,68 @@
     </nav>
 
     <!-- ✅ Hospital Submission Form -->
-    <h2>Add a New Hospital</h2>
-    <form id="hospital-form">
-        <input type="text" name="name" placeholder="Hospital Name" required><br>
-        <input type="text" name="location" placeholder="Location" required><br>
-        <input type="number" name="total_beds" placeholder="Total Beds" required><br>
-        <input type="number" name="available_beds" placeholder="Available Beds" required><br>
-        <input type="number" name="oxygen_supply" placeholder="Oxygen Supply" required><br>
-        <button type="submit">Submit Hospital</button>
-    </form>
 
-    <p id="message"></p> <!-- ✅ Shows success/failure messages -->
-
+    
     <!-- ✅ Hospital List -->
     <h2>Hospital Data</h2>
-    <button onclick="showFakeHospitals()">Refresh Hospitals</button>
+    <h1>Find Emergency Help</h1>
+    <button onclick="fetchHospitals()">Get Nearby Hospitals</button>
+    <ul id="hospital-list"></ul>
     <ul id="hospital-list"></ul>
 
     <script>
+document.addEventListener("DOMContentLoaded", function () {
+    const hospitalForm = document.getElementById("hospital-form");
+
+    hospitalForm.addEventListener("submit", function (event) {
+        event.preventDefault();  // ✅ Prevent default form submission
+
+        // ✅ Collect Form Data properly
+        const formData = {
+            name: document.getElementById("name").value.trim(),
+            location: document.getElementById("location").value.trim(),
+            location_link: document.getElementById("location_link").value.trim(),
+            total_beds: parseInt(document.getElementById("total_beds").value) || 0,
+            available_beds: parseInt(document.getElementById("available_beds").value) || 0,
+            icu_beds: parseInt(document.getElementById("icu_beds").value) || 0,
+            ventilators: parseInt(document.getElementById("ventilators").value) || 0,
+            oxygen_supply: parseInt(document.getElementById("oxygen_supply").value) || 0
+        };
+
+        console.log("Submitting:", formData);  // ✅ Debug: Check form data before sending
+
+        // ✅ Ensure fields are not empty before submitting
+        if (!formData.name || !formData.location) {
+            document.getElementById("message").textContent = "❌ Please fill in all required fields!";
+            return;
+        }
+
+        // ✅ Send Data to Django API (POST Request)
+        fetch('/api/hospital/', {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json"
+            },
+            body: JSON.stringify(formData)
+        })
+        .then(response => {
+            if (!response.ok) {
+                return response.json().then(err => { throw new Error(JSON.stringify(err)); });
+            }
+            return response.json();
+        })
+        .then(data => {
+            document.getElementById("message").textContent = "✅ Hospital added successfully!";
+            hospitalForm.reset();  // ✅ Clear form fields
+            fetchHospitals();  // ✅ Refresh list after adding
+        })
+        .catch(error => {
+            document.getElementById("message").textContent = "❌ Error submitting hospital!";
+            console.error("Error:", error);
+        });
+    });
+});
+
         let fakeHospitals = [  // ✅ Preloaded Fake Data
             { name: "Apollo Hospital", location: "Delhi", available_beds: 10, oxygen_supply: 50 },
             { name: "City Medical Center", location: "Mumbai", available_beds: 5, oxygen_supply: 30 },

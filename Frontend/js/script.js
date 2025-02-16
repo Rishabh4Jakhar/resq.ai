@@ -101,19 +101,27 @@ document.addEventListener("DOMContentLoaded", function () {
     const hospitalForm = document.getElementById("hospital-form");
 
     hospitalForm.addEventListener("submit", function (event) {
-        event.preventDefault();  // Prevent default form submission
+        event.preventDefault();  // ✅ Prevent default form submission
 
-        // ✅ Collect Form Data
+        // ✅ Collect Form Data properly
         const formData = {
-            name: hospitalForm.name.value,
-            location: hospitalForm.location.value,
-            location_link: hospitalForm.location_link.value,
-            total_beds: parseInt(hospitalForm.total_beds.value),
-            available_beds: parseInt(hospitalForm.available_beds.value),
-            icu_beds: parseInt(hospitalForm.icu_beds.value),
-            ventilators: parseInt(hospitalForm.ventilators.value),
-            oxygen_supply: parseInt(hospitalForm.oxygen_supply.value)
+            name: document.getElementById("name").value.trim(),
+            location: document.getElementById("location").value.trim(),
+            location_link: document.getElementById("location_link").value.trim(),
+            total_beds: parseInt(document.getElementById("total_beds").value) || 0,
+            available_beds: parseInt(document.getElementById("available_beds").value) || 0,
+            icu_beds: parseInt(document.getElementById("icu_beds").value) || 0,
+            ventilators: parseInt(document.getElementById("ventilators").value) || 0,
+            oxygen_supply: parseInt(document.getElementById("oxygen_supply").value) || 0
         };
+
+        console.log("Submitting:", formData);  // ✅ Debug: Check form data before sending
+
+        // ✅ Ensure fields are not empty before submitting
+        if (!formData.name || !formData.location) {
+            document.getElementById("message").textContent = "❌ Please fill in all required fields!";
+            return;
+        }
 
         // ✅ Send Data to Django API (POST Request)
         fetch('/api/hospital/', {
@@ -123,13 +131,19 @@ document.addEventListener("DOMContentLoaded", function () {
             },
             body: JSON.stringify(formData)
         })
-        .then(response => response.json())
+        .then(response => {
+            if (!response.ok) {
+                return response.json().then(err => { throw new Error(JSON.stringify(err)); });
+            }
+            return response.json();
+        })
         .then(data => {
-            document.getElementById("message").textContent = "Hospital added successfully!";
-            hospitalForm.reset();  // Clear form fields
+            document.getElementById("message").textContent = "✅ Hospital added successfully!";
+            hospitalForm.reset();  // ✅ Clear form fields
+            fetchHospitals();  // ✅ Refresh list after adding
         })
         .catch(error => {
-            document.getElementById("message").textContent = "Error submitting hospital!";
+            document.getElementById("message").textContent = "❌ Error submitting hospital!";
             console.error("Error:", error);
         });
     });

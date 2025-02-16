@@ -1,4 +1,6 @@
 from django.shortcuts import render
+from django.views.decorators.csrf import csrf_exempt
+import json
 from django.contrib.auth import authenticate, login, logout
 from django.http import JsonResponse
 from rest_framework import viewsets, permissions, status
@@ -52,19 +54,38 @@ def predict_bed_shortage_view(request):
     bed_shortage = predict_bed_shortage()
     return Response({'bed_shortage': bed_shortage})
 
-@api_view(['GET', 'POST'])
+@csrf_exempt  # ✅ Allows frontend requests (remove in production)
 def hospital_list(request):
-    if request.method == 'GET':  # Fetch all hospitals
-        hospitals = Hospital.objects.all()
-        serializer = HospitalSerializer(hospitals, many=True)
-        return Response(serializer.data)
+    if request.method == "GET":
+        hospitals = list(Hospital.objects.values())
+        return JsonResponse(hospitals, safe=False)
 
-    elif request.method == 'POST':  # Save new hospital data
-        serializer = HospitalSerializer(data=request.data)
-        if serializer.is_valid():
-            serializer.save()
-            return Response(serializer.data, status=status.HTTP_201_CREATED)
-        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+    elif request.method == "POST":
+        try:
+            data = json.loads(request.body)  # ✅ Ensure JSON is parsed correctly
+            print("Received Data:", data)  # ✅ Debugging: Print received data
+
+            # ✅ Ensure all fields are present
+            required_fields = ["name", "location", "location_link", "total_beds", "available_beds", "icu_beds", "ventilators", "oxygen_supply"]
+            for field in required_fields:
+                if field not in data:
+                    return JsonResponse({"error": f"Missing field: {field}"}, status=400)
+
+            hospital = Hospital.objects.create(
+                name=data['name'],
+                location=data['location'],
+                location_link=data['location_link'],
+                total_beds=data['total_beds'],
+                available_beds=data['available_beds'],
+                icu_beds=data['icu_beds'],
+                ventilators=data['ventilators'],
+                oxygen_supply=data['oxygen_supply']
+            )
+            return JsonResponse({"message": "Hospital added", "id": hospital.id}, status=201)
+        except json.JSONDecodeError:
+            return JsonResponse({"error": "Invalid JSON format"}, status=400)
+        except Exception as e:
+            return JsonResponse({"error": str(e)}, status=400)
 
 @api_view(['GET', 'POST'])
 def medicine_stock_list(request):
