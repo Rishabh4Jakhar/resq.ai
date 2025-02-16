@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <header><h1>Admin Dashboard</h1></header>
+    <main>
+        <button onclick="navigateTo('crisis-map.html')">View Live Data</button>
+        <button onclick="showPrediction()">AI Predictions</button>
+        <button onclick="manageCrisis()">Crisis Management Tools</button>
+    </main>
+
+    <script>
+        function showPrediction() {
+            alert("AI is predicting crisis patterns...");
+        }
+
+        function manageCrisis() {
+            alert("Redirecting to Crisis Management Tools...");
+        }
+    </script>
+</body>
+</html>

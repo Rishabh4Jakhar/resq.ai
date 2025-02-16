@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Alerts & Notifications</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <header><h1>Alerts & Notifications</h1></header>
+    <main>
+        <button onclick="subscribeAlerts()">Subscribe for Alerts</button>
+        <div id="alertBox"></div>
+    </main>
+
+    <script>
+        function subscribeAlerts() {
+            document.getElementById("alertBox").innerHTML = "<p>You are now subscribed to real-time alerts!</p>";
+        }
+    </script>
+</body>
+</html>
