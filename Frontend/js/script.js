@@ -54,6 +54,48 @@ function fetchSupplierSuggestions() {
         .catch(error => console.error('Error fetching suppliers:', error));
 }
 
+function fetchSafetyInstructions() {
+    let crisisType = document.getElementById("crisis-input").value;
+    if (!crisisType) {
+        alert("Enter a crisis type!");
+        return;
+    }
+
+    fetch(`/api/safety/${crisisType}/`)
+        .then(response => response.json())
+        .then(data => {
+            document.getElementById("dos").textContent = data.dos;
+            document.getElementById("donts").textContent = data.donts;
+        })
+        .catch(error => console.error('Error fetching safety instructions:', error));
+}
+
+
+function fetchAlerts() {
+    fetch('/api/alerts/')
+        .then(response => response.json())
+        .then(data => {
+            data.alerts.forEach(alert => {
+                showPopup(alert.message, alert["crisis_event__location"]);
+            });
+        })
+        .catch(error => console.error('Error fetching alerts:', error));
+}
+
+function showPopup(message, location) {
+    let alertBox = document.createElement("div");
+    alertBox.classList.add("alert-popup");
+    alertBox.innerHTML = `<strong>Alert:</strong> ${message} <br> 📍 ${location}`;
+    
+    document.getElementById("alert-container").appendChild(alertBox);
+
+    setTimeout(() => {
+        alertBox.remove();
+    }, 10000);  // Alert disappears after 10 seconds
+}
+
+setInterval(fetchAlerts, 30000); // Fetch alerts every 30 seconds
+
 
 document.addEventListener("DOMContentLoaded", function () {
     const hospitalForm = document.getElementById("hospital-form");

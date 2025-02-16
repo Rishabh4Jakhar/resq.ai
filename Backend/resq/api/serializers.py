@@ -1,5 +1,19 @@
 from rest_framework import serializers
-from .models import Hospital, ReliefCenter, Shelter, Alert, MedicineStock, FoodResource, ReliefTeam, Volunteer
+from .models import Hospital, ReliefCenter, Shelter, Alert, MedicineStock, FoodResource, ReliefTeam, Volunteer, User
+
+class UserSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = User
+        fields = ['id', 'name', 'age', 'gender', 'location', 'mobile_no', 'is_vendor', 'organization']
+
+class RegisterSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = User
+        fields = ['name', 'password', 'age', 'gender', 'location', 'mobile_no', 'is_vendor', 'organization']
+        extra_kwargs = {'password': {'write_only': True}}
+
+    def create(self, validated_data):
+        return User.objects.create_user(**validated_data)
 
 class HospitalSerializer(serializers.ModelSerializer):
     class Meta:
@@ -40,4 +54,3 @@ class VolunteerSerializer(serializers.ModelSerializer):
     class Meta:
         model = Volunteer
         fields = '__all__'
-        

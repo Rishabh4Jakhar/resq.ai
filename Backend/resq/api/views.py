@@ -1,10 +1,12 @@
 from django.shortcuts import render
+from django.contrib.auth import authenticate, login, logout
 from django.http import JsonResponse
 from rest_framework import viewsets, permissions, status
-from .models import Hospital, ReliefCenter, Shelter, Alert, MedicineStock, FoodResource, ReliefTeam, Volunteer
-from .serializers import HospitalSerializer, ReliefCenterSerializer, ShelterSerializer, AlertSerializer, MedicineStockSerializer, FoodResourceSerializer, ReliefTeamSerializer, VolunteerSerializer
+from .models import Hospital, User, ReliefCenter, Shelter, Alert, MedicineStock, FoodResource, ReliefTeam, Volunteer, SafetyInstruction
+from .serializers import HospitalSerializer, RegisterSerializer, UserSerializer, ReliefCenterSerializer, ShelterSerializer, AlertSerializer, MedicineStockSerializer, FoodResourceSerializer, ReliefTeamSerializer, VolunteerSerializer
 from rest_framework.response import Response
 from rest_framework.decorators import api_view
+from rest_framework_simplejwt.tokens import RefreshToken
 from .utils import predict_bed_shortage, predict_shortages, suggest_alternative_suppliers
 
 class HospitalViewSet(viewsets.ModelViewSet):
@@ -88,7 +90,57 @@ def ai_supplier_suggestions(request, resource_name):
     suggestions = suggest_alternative_suppliers(resource_name)
     return JsonResponse({"suggestions": suggestions})
 
+@api_view(['GET'])
+def active_alerts(request):
+    alerts = list(Alert.objects.filter(is_active=True).values('crisis_event__crisis_type', 'message', 'crisis_event__location'))
+    return JsonResponse({"alerts": alerts})
 
+@api_view(['GET'])
+def get_safety_instructions(request, crisis_type):
+    instructions = SafetyInstruction.objects.filter(crisis_type=crisis_type).first()
+    if not instructions:
+        return JsonResponse({"message": "No safety instructions available."}, status=404)
+    
+    return JsonResponse({"dos": instructions.dos, "donts": instructions.donts})
+
+@api_view(['POST'])
+def register_user(request):
+    serializer = RegisterSerializer(data=request.data)
+    if serializer.is_valid():
+        serializer.save()
+        return Response({"message": "User registered successfully!"}, status=status.HTTP_201_CREATED)
+    return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+@api_view(['POST'])
+def login_user(request):
+    name = request.data.get("name")
+    password = request.data.get("password")
+
+    user = authenticate(username=name, password=password)
+
+    if user:
+        refresh = RefreshToken.for_user(user)
+        return Response({
+            "message": "Login successful!",
+            "access_token": str(refresh.access_token),
+            "user": UserSerializer(user).data
+        })
+    return Response({"error": "Invalid credentials"}, status=status.HTTP_401_UNAUTHORIZED)
+
+  
+class ActiveAlertsViewSet(viewsets.ViewSet):
+    def retrieve(self, request):
+        alerts = list(Alert.objects.filter(is_active=True).values('crisis_event__crisis_type', 'message', 'crisis_event__location'))
+        return Response({"alerts": alerts})
+
+class SafetyInstructionViewSet(viewsets.ViewSet):
+    def retrieve(self, request, pk=None):
+        instructions = SafetyInstruction.objects.filter(crisis_type=pk).first()
+        if not instructions:
+            return Response({"message": "No safety instructions available."}, status=404)
+        
+        return Response({"dos": instructions.dos, "donts": instructions.donts})
+    
 class SupplierSuggestionViewSet(viewsets.ViewSet):
     def retrieve(self, request, pk=None):
         suggestions = suggest_alternative_suppliers(pk)

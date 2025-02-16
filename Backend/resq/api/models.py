@@ -1,5 +1,5 @@
 from django.db import models
-from django.contrib.auth.models import User 
+from django.contrib.auth.models import User, AbstractBaseUser, BaseUserManager
 
 # Create your models here.
 class Hospital(models.Model):
@@ -76,26 +76,32 @@ class Shelter(models.Model):
     def __str__(self):
         return self.name
 
-class Alert(models.Model):
-    ALERT_TYPES = [
-        ('Oxygen Shortage', 'Oxygen Shortage'),
-        ('Bed Full', 'Bed Full'),
-        ('Food Shortage', 'Food Shortage'),
-        ('Water Shortage', 'Water Shortage'),
-        ('Medical Shortage', 'Medical Shortage'),
-        ('Volunteer Required', 'Volunteer Required'),
-        ('Transport Required', 'Transport Required'),
+class CrisisEvent(models.Model):
+    CRISIS_TYPES = [
+        ('Earthquake', 'Earthquake'),
+        ('Flood', 'Flood'),
+        ('Fire', 'Fire'),
+        ('Medical Emergency', 'Medical Emergency'),
+        ('Resource Shortage', 'Resource Shortage'),
+        ('Pandemic', 'Pandemic'),
         ('Other', 'Other')
     ]
     
-    alert_type = models.CharField(max_length=50, choices=ALERT_TYPES)
+    crisis_type = models.CharField(max_length=50, choices=CRISIS_TYPES)
     location = models.CharField(max_length=255)
-    location_link = models.CharField(max_length=255)
+    severity = models.IntegerField()  # 1 (Low) - 5 (Critical)
     timestamp = models.DateTimeField(auto_now_add=True)
 
-    def __str__(self):
-        return f"{self.alert_type} at {self.location}"
+class Alert(models.Model):
+    crisis_event = models.ForeignKey(CrisisEvent, on_delete=models.CASCADE)
+    message = models.TextField()
+    is_active = models.BooleanField(default=True)
+    created_at = models.DateTimeField(auto_now_add=True)
 
+class SafetyInstruction(models.Model):
+    crisis_type = models.CharField(max_length=50, choices=CrisisEvent.CRISIS_TYPES)
+    dos = models.TextField()  # Safety steps to follow
+    donts = models.TextField()  # Things to avoid
 class Resource(models.Model):
     name = models.CharField(max_length=255)  # e.g., Oxygen, Medicine, Food
     quantity = models.IntegerField()  # Current stock level
@@ -114,3 +120,39 @@ class SupplyChainLog(models.Model):
     supplier = models.ForeignKey(Supplier, on_delete=models.CASCADE, null=True, blank=True)
     action = models.CharField(max_length=255)  # e.g., "Reallocated", "Shortage Detected"
     timestamp = models.DateTimeField(auto_now_add=True)
+
+class UserManager(BaseUserManager):
+    def create_user(self, name, password, age, gender, location, mobile_no, is_vendor=False, organization=None):
+        if not name or not password:
+            raise ValueError("Users must have a name and password.")
+        user = self.model(
+            name=name,
+            age=age,
+            gender=gender,
+            location=location,
+            mobile_no=mobile_no,
+            is_vendor=is_vendor,
+            organization=organization if is_vendor else None
+        )
+        user.set_password(password)  # Hash password
+        user.save(using=self._db)
+        return user
+
+class User(AbstractBaseUser):
+    name = models.CharField(max_length=255, unique=True)
+    password = models.CharField(max_length=255)  # Hashed password
+    age = models.IntegerField()
+    gender = models.CharField(max_length=10, choices=[("Male", "Male"), ("Female", "Female"), ("Other", "Other")])
+    location = models.CharField(max_length=255)
+    mobile_no = models.CharField(max_length=15, unique=True)
+    
+    is_vendor = models.BooleanField(default=False)
+    organization = models.CharField(max_length=255, null=True, blank=True)  # Only for vendors
+    
+    objects = UserManager()
+
+    USERNAME_FIELD = 'name'  # Login with name
+    REQUIRED_FIELDS = ['password', 'age', 'gender', 'location', 'mobile_no']
+    
+    def __str__(self):
+        return self.name
