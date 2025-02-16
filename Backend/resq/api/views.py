@@ -1,7 +1,7 @@
 from django.shortcuts import render
-from rest_framework import viewsets
-from .models import Hospital, ReliefCenter, Shelter, Alert
-from .serializers import HospitalSerializer, ReliefCenterSerializer, ShelterSerializer, AlertSerializer
+from rest_framework import viewsets, permissions
+from .models import Hospital, ReliefCenter, Shelter, Alert, MedicineStock, FoodResource, ReliefTeam, Volunteer
+from .serializers import HospitalSerializer, ReliefCenterSerializer, ShelterSerializer, AlertSerializer, MedicineStockSerializer, FoodResourceSerializer, ReliefTeamSerializer, VolunteerSerializer
 from rest_framework.response import Response
 from rest_framework.decorators import api_view
 from .utils import predict_bed_shortage
@@ -9,6 +9,7 @@ from .utils import predict_bed_shortage
 class HospitalViewSet(viewsets.ModelViewSet):
     queryset = Hospital.objects.all()
     serializer_class = HospitalSerializer
+    #permission_classes = [permissions.IsAuthenticated]
 
 class ReliefCenterViewSet(viewsets.ModelViewSet):
     queryset = ReliefCenter.objects.all()
@@ -21,6 +22,26 @@ class ShelterViewSet(viewsets.ModelViewSet):
 class AlertViewSet(viewsets.ModelViewSet):
     queryset = Alert.objects.all()
     serializer_class = AlertSerializer
+
+class MedicineStockViewSet(viewsets.ModelViewSet):
+    queryset = MedicineStock.objects.all()
+    serializer_class = MedicineStockSerializer
+    permission_classes = [permissions.IsAuthenticated]
+
+class FoodResourceViewSet(viewsets.ModelViewSet):
+    queryset = FoodResource.objects.all()
+    serializer_class = FoodResourceSerializer
+    permission_classes = [permissions.IsAuthenticated]
+
+class ReliefTeamViewSet(viewsets.ModelViewSet):
+    queryset = ReliefTeam.objects.all()
+    serializer_class = ReliefTeamSerializer
+    permission_classes = [permissions.IsAuthenticated]
+
+class VolunteerViewSet(viewsets.ModelViewSet):
+    queryset = Volunteer.objects.all()
+    serializer_class = VolunteerSerializer
+    permission_classes = [permissions.IsAuthenticated]
 
 
 @api_view(['GET'])
