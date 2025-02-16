@@ -1,6 +1,6 @@
 from django.urls import path, include
 from rest_framework.routers import DefaultRouter
-from .views import HospitalViewSet, ReliefCenterViewSet, ShelterViewSet, AlertViewSet, predict_bed_shortage_view, MedicineStockViewSet, FoodResourceViewSet, ReliefTeamViewSet, VolunteerViewSet, hospital_list, medicine_stock_list
+from .views import HospitalViewSet, ReliefCenterViewSet, ShelterViewSet, AlertViewSet, predict_bed_shortage_view, MedicineStockViewSet, FoodResourceViewSet, ReliefTeamViewSet, VolunteerViewSet, hospital_list, medicine_stock_list, home
 
 router = DefaultRouter()
 router.register('hospital', HospitalViewSet)

@@ -77,5 +77,5 @@ def medicine_stock_list(request):
             return Response(serializer.data, status=status.HTTP_201_CREATED)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
-#def home(request):
-#    return render(request, 'api/home.html')
+def home(request):
+    return render(request, 'index.html')
