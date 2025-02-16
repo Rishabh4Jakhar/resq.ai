@@ -1,6 +1,6 @@
 from django.urls import path, include
 from rest_framework.routers import DefaultRouter
-from .views import HospitalViewSet, ReliefCenterViewSet, ShelterViewSet, AlertViewSet,ai_shortage_predictions, predict_bed_shortage_view, MedicineStockViewSet, FoodResourceViewSet, ReliefTeamViewSet, VolunteerViewSet, hospital_list, medicine_stock_list, ShortagePredictionViewSet
+from .views import HospitalViewSet, ReliefCenterViewSet, ai_supplier_suggestions, ShelterViewSet, AlertViewSet,ai_shortage_predictions, predict_bed_shortage_view, MedicineStockViewSet, FoodResourceViewSet, ReliefTeamViewSet, VolunteerViewSet, hospital_list, medicine_stock_list, ShortagePredictionViewSet
 
 router = DefaultRouter()
 router.register('hospital', HospitalViewSet)
@@ -18,5 +18,6 @@ router.register('volunteer', VolunteerViewSet)
 
 urlpatterns = [
     path('', include(router.urls)),
+    path('ai/suppliers/<str:resource_name>/', ai_supplier_suggestions, name="ai-suppliers"),
     path('ai/shortages/', ai_shortage_predictions, name="ai-shortages"),
 ]

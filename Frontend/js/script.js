@@ -18,6 +18,43 @@ function fetchHospitals() {
         .catch(error => console.error('Error fetching hospitals:', error));
 }
 
+function fetchShortagePredictions() {
+    fetch('/api/ai/shortages/')
+        .then(response => response.json())
+        .then(data => {
+            let list = document.getElementById('shortage-list');
+            list.innerHTML = "";
+            data.shortages.forEach(item => {
+                let listItem = document.createElement("li");
+                listItem.textContent = `⚠ Shortage Alert: ${item}`;
+                list.appendChild(listItem);
+            });
+        })
+        .catch(error => console.error('Error fetching shortages:', error));
+}
+
+function fetchSupplierSuggestions() {
+    let resource = document.getElementById("resource-input").value;
+    if (!resource) {
+        alert("Enter a resource name!");
+        return;
+    }
+
+    fetch(`/api/ai/suppliers/${resource}/`)
+        .then(response => response.json())
+        .then(data => {
+            let list = document.getElementById('supplier-list');
+            list.innerHTML = "";
+            data.suggestions.forEach(supplier => {
+                let listItem = document.createElement("li");
+                listItem.textContent = `${supplier.name} (Score: ${supplier.score}, Cost Efficiency: ${supplier.cost})`;
+                list.appendChild(listItem);
+            });
+        })
+        .catch(error => console.error('Error fetching suppliers:', error));
+}
+
+
 document.addEventListener("DOMContentLoaded", function () {
     const hospitalForm = document.getElementById("hospital-form");
 

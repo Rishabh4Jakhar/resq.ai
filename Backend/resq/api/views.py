@@ -5,7 +5,7 @@ from .models import Hospital, ReliefCenter, Shelter, Alert, MedicineStock, FoodR
 from .serializers import HospitalSerializer, ReliefCenterSerializer, ShelterSerializer, AlertSerializer, MedicineStockSerializer, FoodResourceSerializer, ReliefTeamSerializer, VolunteerSerializer
 from rest_framework.response import Response
 from rest_framework.decorators import api_view
-from .utils import predict_bed_shortage, predict_shortages
+from .utils import predict_bed_shortage, predict_shortages, suggest_alternative_suppliers
 
 class HospitalViewSet(viewsets.ModelViewSet):
     queryset = Hospital.objects.all()
@@ -83,6 +83,17 @@ def ai_shortage_predictions(request):
     predictions = predict_shortages()
     return JsonResponse(predictions)
 
+@api_view(['GET'])
+def ai_supplier_suggestions(request, resource_name):
+    suggestions = suggest_alternative_suppliers(resource_name)
+    return JsonResponse({"suggestions": suggestions})
+
+
+class SupplierSuggestionViewSet(viewsets.ViewSet):
+    def retrieve(self, request, pk=None):
+        suggestions = suggest_alternative_suppliers(pk)
+        return Response({"suggestions": suggestions})
+    
 class ShortagePredictionViewSet(viewsets.ViewSet):
     def list(self, request):
         predictions = predict_shortages()

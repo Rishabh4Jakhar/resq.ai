@@ -51,3 +51,7 @@ def predict_shortages():
     shortages = [resources[i]['name'] for i in range(len(resources)) if predictions[i] < 0.3]
 
     return {"shortages": shortages}
+
+def suggest_alternative_suppliers(resource_name):
+    suppliers = Supplier.objects.filter(resource_type=resource_name).order_by('-reliability_score', 'cost_efficiency')
+    return [{"name": s.name, "score": s.reliability_score, "cost": s.cost_efficiency} for s in suppliers[:3]]
