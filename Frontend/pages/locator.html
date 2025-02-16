@@ -5,17 +5,37 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Emergency Locator</title>
     <link rel="stylesheet" href="styles.css">
+    {% load static %}
+    <link rel="stylesheet" href="./../css/styles.css">
+    <link rel="stylesheet" href="{% static 'styles.css' %}">  <!-- Correct CSS Path -->
+    <script defer src="{% static 'script.js' %}"></script> <!-- Correct JS Path -->
 </head>
 <body>
     <header><h1>Emergency Locator</h1></header>
-    
+    <h1>Find Emergency Help</h1>
+    <button onclick="fetchHospitals()">Get Nearby Hospitals</button>
+    <ul id="hospital-list"></ul>
     <main>
         <input type="text" id="location" placeholder="Enter your location">
         <button onclick="getLocation()">Enable GPS</button>
         <button onclick="findResources()">Find Nearby Help</button>
         <div id="results"></div>
     </main>
+    <!-- ✅ Hospital Submission Form -->
+    <h2>Add Hospital</h2>
+    <form id="hospital-form">
+        <input type="text" name="name" placeholder="Hospital Name" required><br>
+        <input type="text" name="location" placeholder="Location" required><br>
+        <input type="text" name="location_link" placeholder="Location Link" required><br>
+        <input type="number" name="total_beds" placeholder="Total Beds" required><br>
+        <input type="number" name="available_beds" placeholder="Available Beds" required><br>
+        <input type="number" name="icu_beds" placeholder="ICU Beds" required><br>
+        <input type="number" name="ventilators" placeholder="Ventilators" required><br>
+        <input type="number" name="oxygen_supply" placeholder="Oxygen Supply" required><br>
+        <button type="submit">Submit Hospital</button>
+    </form>
 
+    <p id="message"></p> <!-- ✅ Display success/error messages -->
     <script>
         function getLocation() {
             if (navigator.geolocation) {
