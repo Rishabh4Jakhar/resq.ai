@@ -5,32 +5,64 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Dashboard</title>
     {% load static %}
-    <link rel="stylesheet" href="./../css/styles.css">
     <link rel="stylesheet" href="{% static 'styles.css' %}">  <!-- Correct CSS Path -->
     <script defer src="{% static 'script.js' %}"></script> <!-- Correct JS Path -->
 </head>
 <body>
+ 
     <nav class="navbar">
         <h1>Admin Dashboard</h1>
-        <button onclick="window.location.href=''">Home</button>
+        <button onclick="window.location.href='home'">Home</button>
     </nav>
 
-    <h2>AI Insights</h2>
-    <button onclick="showFakeAIInsights()">Load Insights</button>
-    
-    <ul id="insights-list"></ul>
+    <!-- ✅ Hospital Submission Form -->
+    <h2>Add a New Hospital</h2>
+    <form id="hospital-form">
+        <input type="text" name="name" placeholder="Hospital Name" required><br>
+        <input type="text" name="location" placeholder="Location" required><br>
+        <input type="number" name="total_beds" placeholder="Total Beds" required><br>
+        <input type="number" name="available_beds" placeholder="Available Beds" required><br>
+        <input type="number" name="oxygen_supply" placeholder="Oxygen Supply" required><br>
+        <button type="submit">Submit Hospital</button>
+    </form>
+
+    <p id="message"></p> <!-- ✅ Shows success/failure messages -->
+
+    <!-- ✅ Hospital List -->
+    <h2>Hospital Data</h2>
+    <button onclick="showFakeHospitals()">Refresh Hospitals</button>
+    <ul id="hospital-list"></ul>
 
     <script>
-        function showFakeAIInsights() {
-            let insights = [
-                "⚠ Oxygen shortage detected in Hospital A",
-                "✔ Food supply is stable in District B",
-                "⚠ Medicine running low in Clinic C"
-            ];
-            let list = document.getElementById('insights-list');
-            list.innerHTML = insights.map(i => `<li>${i}</li>`).join('');
+        let fakeHospitals = [  // ✅ Preloaded Fake Data
+            { name: "Apollo Hospital", location: "Delhi", available_beds: 10, oxygen_supply: 50 },
+            { name: "City Medical Center", location: "Mumbai", available_beds: 5, oxygen_supply: 30 },
+            { name: "Green Cross Shelter", location: "Kolkata", available_beds: 8, oxygen_supply: 70 }
+        ];
+
+        // ✅ Handle Form Submission & Add New Fake Hospital
+        document.getElementById("hospital-form").addEventListener("submit", function(event) {
+            event.preventDefault();
+            
+            let newHospital = {
+                name: this.name.value,
+                location: this.location.value,
+                available_beds: this.available_beds.value,
+                oxygen_supply: this.oxygen_supply.value
+            };
+
+            fakeHospitals.push(newHospital); // ✅ Add to Fake Database
+            document.getElementById("message").textContent = "✅ Hospital added successfully!";
+            this.reset();
+        });
+
+        // ✅ Show All Fake Hospitals (Preloaded + New)
+        function showFakeHospitals() {
+            let list = document.getElementById('hospital-list');
+            list.innerHTML = fakeHospitals.map(h => 
+                `<li>🏥 ${h.name} - ${h.available_beds} Beds Available - Oxygen: ${h.oxygen_supply}%</li>`
+            ).join('');
         }
     </script>
-
 </body>
 </html>
