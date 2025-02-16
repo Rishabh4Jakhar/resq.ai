@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Safety Instructions</title>
+    {% load static %}
+    <link rel="stylesheet" href="./../css/styles.css">
+    <link rel="stylesheet" href="{% static 'styles.css' %}">  <!-- Correct CSS Path -->
+    <script defer src="{% static 'script.js' %}"></script> <!-- Correct JS Path -->
+</head>
+<body>
+
+    <nav class="navbar">
+        <h1>Safety Instructions</h1>
+        <button onclick="window.location.href=''">Home</button>
+    </nav>
+
+    <h2>Get Crisis Safety Tips</h2>
+    <input type="text" id="crisis-input" placeholder="Enter Crisis Type">
+    <button onclick="showFakeSafety()">Get Instructions</button>
+    
+    <h3>Dos:</h3>
+    <p id="dos"></p>
+    
+    <h3>Don'ts:</h3>
+    <p id="donts"></p>
+
+    <script>
+        function showFakeSafety() {
+            let crisis = document.getElementById("crisis-input").value.toLowerCase();
+            let safetyTips = {
+                earthquake: { dos: "✔ Stay under a table", donts: "❌ Do not use elevators" },
+                flood: { dos: "✔ Move to higher ground", donts: "❌ Do not walk in deep water" },
+                fire: { dos: "✔ Use a fire extinguisher", donts: "❌ Do not open doors if hot" }
+            };
+
+            if (safetyTips[crisis]) {
+                document.getElementById("dos").textContent = safetyTips[crisis].dos;
+                document.getElementById("donts").textContent = safetyTips[crisis].donts;
+            } else {
+                document.getElementById("dos").textContent = "No instructions available.";
+                document.getElementById("donts").textContent = "";
+            }
+        }
+    </script>
+
+</body>
+</html>

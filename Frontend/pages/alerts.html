@@ -7,15 +7,26 @@
     <link rel="stylesheet" href="styles.css">
 </head>
 <body>
-    <header><h1>Alerts & Notifications</h1></header>
-    <main>
-        <button onclick="subscribeAlerts()">Subscribe for Alerts</button>
-        <div id="alertBox"></div>
-    </main>
+
+    <nav class="navbar">
+        <h1>Alerts & Notifications</h1>
+        <button onclick="window.location.href=''">Home</button>
+    </nav>
+
+    <h2>Active Alerts</h2>
+    <button onclick="showFakeAlerts()">View Alerts</button>
+    
+    <ul id="alert-list"></ul>
 
     <script>
-        function subscribeAlerts() {
-            document.getElementById("alertBox").innerHTML = "<p>You are now subscribed to real-time alerts!</p>";
+        function showFakeAlerts() {
+            let alerts = [
+                "⚠ Earthquake warning in City A",
+                "⚠ Flood expected in Town B",
+                "⚠ Fire breakout in Industrial Zone"
+            ];
+            let list = document.getElementById('alert-list');
+            list.innerHTML = alerts.map(a => `<li>${a}</li>`).join('');
         }
     </script>
 </body>

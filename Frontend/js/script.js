@@ -186,3 +186,22 @@ document.addEventListener("DOMContentLoaded", function () {
         .catch(error => console.error("Error:", error));
     });
 });
+
+document.addEventListener("DOMContentLoaded", function () {
+    const alerts = [
+        "Stay Updated! Check the latest reports on disaster response.",
+        "New Variant Detected! Follow health guidelines and get vaccinated.",
+        "Critical: Oxygen Supply Low in North District.",
+        "Emergency Lockdown! Government announces new restrictions.",
+        "New Travel Rules: RT-PCR test required for international flights.",
+    ];
+
+    const alertList = document.getElementById("alert-list");
+
+    // Populate alert feed dynamically
+    alerts.forEach(alert => {
+        let listItem = document.createElement("li");
+        listItem.textContent = alert;
+        alertList.appendChild(listItem);
+    });
+});

@@ -10,29 +10,27 @@
     <script defer src="{% static 'script.js' %}"></script> <!-- Correct JS Path -->
 </head>
 <body>
-    <header><h1>Admin Dashboard</h1></header>
-    <main>
-   <!-- AI Insights Section -->
-   <h2>AI-Predicted Shortages</h2>
-   <button onclick="fetchShortagePredictions()">Check Shortages</button>
-   <ul id="shortage-list"></ul>        
-        <button onclick="navigateTo('crisis-map.html')">View Live Data</button>
-        <button onclick="showPrediction()">AI Predictions</button>
-        <button onclick="manageCrisis()">Crisis Management Tools</button>
-    </main>
-    <h2>Supplier Recommendations</h2>
-<input type="text" id="resource-input" placeholder="Enter Resource Name">
-<button onclick="fetchSupplierSuggestions()">Get Suppliers</button>
-<ul id="supplier-list"></ul>
+    <nav class="navbar">
+        <h1>Admin Dashboard</h1>
+        <button onclick="window.location.href=''">Home</button>
+    </nav>
+
+    <h2>AI Insights</h2>
+    <button onclick="showFakeAIInsights()">Load Insights</button>
+    
+    <ul id="insights-list"></ul>
 
     <script>
-        function showPrediction() {
-            alert("AI is predicting crisis patterns...");
-        }
-
-        function manageCrisis() {
-            alert("Redirecting to Crisis Management Tools...");
+        function showFakeAIInsights() {
+            let insights = [
+                "⚠ Oxygen shortage detected in Hospital A",
+                "✔ Food supply is stable in District B",
+                "⚠ Medicine running low in Clinic C"
+            ];
+            let list = document.getElementById('insights-list');
+            list.innerHTML = insights.map(i => `<li>${i}</li>`).join('');
         }
     </script>
+
 </body>
 </html>
