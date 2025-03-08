@@ -106,5 +106,3 @@ This project is licensed under the **MIT License**.
 
 ---
 
-🚀 **Now you're ready to push this to GitHub!** Let me know if you need any modifications. 😊
-
