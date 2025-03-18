@@ -94,7 +94,7 @@ function showPopup(message, location) {
     }, 10000);  // Alert disappears after 10 seconds
 }
 
-setInterval(fetchAlerts, 30000); // Fetch alerts every 30 seconds
+//setInterval(fetchAlerts, 30000); // Fetch alerts every 30 seconds
 
 
 document.addEventListener("DOMContentLoaded", function () {
