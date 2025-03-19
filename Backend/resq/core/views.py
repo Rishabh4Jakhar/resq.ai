@@ -15,3 +15,6 @@ def crisis_map(request):
 
 def alerts(request):
     return render(request, 'alerts.html')
+
+def signin(request):
+    return render(request, 'sign-in.html')
